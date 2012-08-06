@@ -8,24 +8,26 @@ url="http://vibed.org"
 license=('MIT')
 depends=('dmd>=2.060' 'libevent' 'openssl')
 makedepends=('unzip')
-backup=('/etc/vibe/vibe.conf')
 install='vibed.install'
+noextract=('vibed.zip')
 source=("vibed.zip::http://vibed.org/download?file=zipball/v${pkgver}")
 md5sums=('01018fa20372d7b9a9ee1b5957963356')
 
 _zipdir=rejectedsoftware-vibe.d-15ce43a
 
 build() {
-    cd "$srcdir/$pkgname-$pkgver"
+    cd "$srcdir"
     unzip vibed.zip 
 }
 
 package() {
-    cd "$srcdir/$pkgname-$pkgver/$_zipdir" 
-    install -Dm755 ./bin ${pkgdir}/usr/share/vibe/bin
-    install -Dm644 ./source ${pkgdir}/usr/share/vibe/source
-    install -Dm644 ./benchmark ${pkgdir}/usr/share/vibe/benchmark
-    install -Dm644 ./examples ${pkgdir}/usr/share/vibe/examples
-    install -Dm644 ./LICENSE.txt ${pkgdir}/usr/share/vibe/LICENSE.txt
-    install -Dm644 ./LICENSE_DE.txt ${pkgdir}/usr/share/vibe/LICENSE_DE.txt
+    cd "$srcdir/$_zipdir" 
+    mkdir -p ${pkgdir}/usr/share/vibed
+    mkdir -p ${pkgdir}/usr/share/licenses/vibed
+    cp -r ./bin ${pkgdir}/usr/share/vibed/bin
+    cp -r ./source ${pkgdir}/usr/share/vibed/source
+    cp -r ./benchmark ${pkgdir}/usr/share/vibed/benchmark
+    cp -r ./examples ${pkgdir}/usr/share/vibed/examples
+    cp ./LICENSE.txt ${pkgdir}/usr/share/licenses/vibed/LICENSE.txt
+    cp ./LICENSE_DE.txt ${pkgdir}/usr/share/licenses/vibed/LICENSE_DE.txt
 }

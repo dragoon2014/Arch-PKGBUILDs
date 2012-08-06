@@ -15,7 +15,7 @@ pre_install() {
  
     # create a symlink to the vibe script
     echo "Creating symlink in $SYMLINK_FILE..."
-    ln -sf /usr/share/vibe/bin/vibe $SYMLINK_FILE
+    ln -sf /usr/share/vibed/bin/vibe $SYMLINK_FILE
 
     # creating group if he isn't already there
     if ! getent group $GROUP_NAME >/dev/null; then
