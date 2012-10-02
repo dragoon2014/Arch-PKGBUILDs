@@ -1,6 +1,6 @@
 # Maintainer: Dicebot <m.strashun@gmail.com>
 pkgname=vibed
-pkgver=0.7.7
+pkgver=0.7.8
 pkgrel=0
 pkgdesc="Asynchronous I/O web framework written in D"
 arch=('i686' 'x86_64')
