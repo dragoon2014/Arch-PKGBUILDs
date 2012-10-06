@@ -133,7 +133,7 @@ package_dtools-git() {
     msg "Packaging d tools"
 
 	cd "$srcdir/${_gitname[3]}-build"
-	install -Dm644 ./rdmd /usr/bin/rdmd
+	install -Dm755 ./rdmd $pkgdir/usr/bin/rdmd
 }
 
 pkgdesc="Digital Mars D compiler, runtime and standard library (git master branch)"
