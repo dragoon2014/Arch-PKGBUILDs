@@ -1,17 +1,16 @@
 # Maintainer: Zenja Ivkovic <izenja@gmail.com> aka izenja
 pkgname=dmd2-git
 true && pkgname=('dmd2-git' 'druntime-git' 'libphobos2-git')
-pkgver=20121003
+pkgver=20121006
 pkgrel=1
 arch=('i686' 'x86_64')
 url="http://www.digitalmars.com/d/2.0/"
 license=('GPL')
 makedepends=('git')
 options=('!strip' 'docs')
-provides=('dmd=2.060')
 
-_gitroot=("git://github.com/D-Programming-Language/dmd.git" "git://github.com/D-Programming-Language/druntime.git" "git://github.com/D-Programming-Language/phobos.git")
-_gitname=('dmd' 'druntime' 'phobos')
+_gitroot=("git://github.com/D-Programming-Language/dmd.git" "git://github.com/D-Programming-Language/druntime.git" "git://github.com/D-Programming-Language/phobos.git" "git://github.com/D-Programming-Language/tools.git")
+_gitname=('dmd' 'druntime' 'phobos' 'tools')
 
 if [ $CARCH = 'x86_64' ] ; then
 	archstr="64"
@@ -45,6 +44,14 @@ build() {
 		git clone ${_gitroot[2]} ${_gitname[2]}
 	fi
 	
+    cd "$srcdir"
+	msg "Retrieving from repository: tools"
+	if [ -d ${_gitname[3]} ] ; then
+		cd ${_gitname[3]} && git pull origin
+	else
+		git clone ${_gitroot[3]} ${_gitname[3]}
+	fi
+
 	msg "Making dmd"
 	rm -rf "$srcdir/${_gitname[0]}-build"
 	git clone "$srcdir/${_gitname[0]}" "$srcdir/${_gitname[0]}-build"
@@ -69,16 +76,21 @@ build() {
 		> DRUNTIME_PATH = ../${_gitname[1]}-build
 	ENDPATCH
 	PATH="$srcdir/${_gitname[0]}-build/src:$PATH" make -f posix.mak MODEL=$archstr
+
+    msg "Making tools"
+	rm -rf "$srcdir/${_gitname[3]}-build"
+	git clone "$srcdir/${_gitname[3]}" "$srcdir/${_gitname[3]}-build"
+	cd "$srcdir/${_gitname[3]}-build"
+	PATH="$srcdir/${_gitname[0]}-build/src:$PATH" dmd -I$srcdir/${_gitname[1]}-build/src -I$srcdir/${_gitname[2]}-build -L-L$srcdir/${_gitname[2]}-build/generated/linux/release/$archstr/ -inline -release ./rdmd.d
 }
 
 package_dmd2-git() {
-	provides=("dmd2" "d-compiler")
+	provides=("dmd=2.060" "d-compiler")
 	conflicts=("dmd2")
 	cd "$srcdir/${_gitname[0]}-build/src"
 	msg "Packaging dmd"
 	
 	install -Dm755 ./dmd $pkgdir/usr/bin/dmd
-	install -Dm755 ./rdmd $pkgdir/usr/bin/dmd
 	echo -e "[Environment]\nDFLAGS=-m$archstr -I/usr/include/d -I/usr/include/d/druntime/import -L-L/usr/lib -L-lrt" > $srcdir/dmd.conf
 	install -Dm644 $srcdir/dmd.conf $pkgdir/etc/dmd.conf
 	
@@ -113,6 +125,15 @@ package_libphobos2-git() {
 	cp -Rf std $pkgdir/usr/include/d
 	cp -Rf etc $pkgdir/usr/include/d
 	cp -f {crc32,index,unittest}.d $pkgdir/usr/include/d
+}
+
+package_dtools-git() {
+    provides=("rdmd")
+    conflicts=("dmd2")
+    msg "Packaging d tools"
+
+	cd "$srcdir/${_gitname[3]}-build"
+	install -Dm644 ./rdmd /usr/bin/rdmd
 }
 
 pkgdesc="Digital Mars D compiler, runtime and standard library (git master branch)"
