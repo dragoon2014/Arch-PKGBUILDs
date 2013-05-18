@@ -1,0 +1,81 @@
+pkgname=dtools
+pkgdesc="Optional development utilities collection for D programming language"
+pkgver=master
+pkgrel=1
+arch=('i686' 'x86_64')
+url="http://www.dlang.org"
+license=('Boost')
+makedepends=('git' 'sed' 'd-compiler')
+optdepends=('zsh: for using dtools-update.sh script')
+source=("git+http://github.com/D-Programming-Language/tools.git#branch=$pkgver") 
+sha1sums=('SKIP')
+install='dtools.install'
+
+# Currently omitted:
+#     * dman - requires additional files for fine build configuration
+#     * changed, detab, tolf, findtags, latest-tag - used by D developers, not users
+_dsrclist=("catdoc" "ddemangle" "dget" "rdmd" )
+_shsrclist=("update.sh")
+_customlist=("dustmite")
+
+build() {
+    # sed + pacman magic
+    # 1) find all installed "d-compiler" providers and chose one
+    provider_name=( `pacman -Qs d-compiler | sed -nr "s/^.*\/(.*) .*$/\1/p"` )
+    compiler=""
+
+    if [ ${#provider_name[@]} -eq 0 ]
+        then
+            error "No d-compiler providers found installed"
+            return 1
+    fi
+
+    if [ ${#provider_name[@]} -gt 1 ]
+        then
+            msg "Multiple d-compiler providers installed."
+            compiler=${provider_name[0]}
+            msg "'$compiler' selected."
+    fi
+
+    # 2) find all provider package files and chose one that is stored in /usr/bin and ends with dmd
+    # by convention, other d compiler implementations provide wrappers with same command-line interface - gdmd, ldmd
+    compiler_binaries=( `pacman -Ql $compiler | sed -nr "s/^.*\/usr\/bin\/(.*dmd)$/\1/p"` )
+
+    if [ ${#compiler_binaries[@]} -eq 0 ]
+        then
+            error "No *dmd binary found"
+            return 1
+    fi
+
+    if [ ${#compiler_binaries[@]} -gt 1 ]
+        then
+            msg "Multiple *dmd binaries found: ($compiler_binaries)"
+    fi
+    
+    compiler=${compiler_binaries[0]}
+    msg "Using '$compiler' binary as a D compiler"
+
+    if [ -z $compiler ]
+        then
+            error "No suitable compiler binary found"
+            return 1
+    fi
+
+    cd $srcdir/tools
+    for name in "${_dsrclist[@]}"
+    do
+        $compiler $name".d"
+    done
+
+    # Handle DustMite separately as it has multiple source files :)
+    ./rdmd --build-only -od. DustMite/dustmite.d
+}
+
+package() {
+    cd $srcdir/tools
+    combined=( "${_dsrclist[@]}" "${_shsrclist[@]}"  "${_customlist[@]}" )
+    for name in "${combined[@]}"
+    do
+        install -D -m 555 $name $pkgdir/usr/bin/dtools-$name 
+    done
+}
