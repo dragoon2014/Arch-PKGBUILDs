@@ -6,15 +6,14 @@
 
 pkgname=('dmd' 'libphobos')
 pkgbase=dmd
-#pkgver=2.063
-pkgver=master
+pkgver=2.063.1
 pkgrel=1
 arch=('i686' 'x86_64')
 url="http://www.dlang.org"
 makedepends=('git')
-source=("git+http://github.com/D-Programming-Language/dmd.git#branch=$pkgver"
-        "git+http://github.com/D-Programming-Language/druntime.git#branch=$pkgver"
-        "git+http://github.com/D-Programming-Language/phobos.git#branch=$pkgver")
+source=("git+http://github.com/D-Programming-Language/dmd.git#tag=v$pkgver"
+        "git+http://github.com/D-Programming-Language/druntime.git#tag=v$pkgver"
+        "git+http://github.com/D-Programming-Language/phobos.git#tag=v$pkgver")
 sha1sums=('SKIP'
           'SKIP'
           'SKIP')
