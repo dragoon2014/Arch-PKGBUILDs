@@ -1,13 +1,13 @@
 pkgname=dtools
 pkgdesc="Optional development utilities collection for D programming language"
-pkgver=master
+pkgver=2.063.1
 pkgrel=1
 arch=('i686' 'x86_64')
 url="http://www.dlang.org"
 license=('Boost')
 makedepends=('git' 'sed' 'd-compiler')
 optdepends=('zsh: for using dtools-update.sh script')
-source=("git+http://github.com/D-Programming-Language/tools.git#branch=$pkgver") 
+source=("git+http://github.com/D-Programming-Language/tools.git#tag=v$pkgver") 
 sha1sums=('SKIP')
 install='dtools.install'
 
