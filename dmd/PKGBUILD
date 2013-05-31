@@ -24,13 +24,13 @@ sha1sums=('SKIP'
 build() {
     # dmd
     cd $srcdir/dmd/src
-    make -f posix.mak MODEL=$_archbits
+    make -f posix.mak MODEL=$_archbits RELEASE=1
 
     cd $srcdir/druntime
-    make -f posix.mak MODEL=$_archbits DMD=$srcdir/dmd/src/dmd
+    make -f posix.mak MODEL=$_archbits DMD=$srcdir/dmd/src/dmd RELEASE=1
 
     cd $srcdir/phobos
-    make -f posix.mak MODEL=$_archbits DMD=$srcdir/dmd/src/dmd
+    make -f posix.mak MODEL=$_archbits DMD=$srcdir/dmd/src/dmd RELEASE=1
 }
 
 package_dmd() {
