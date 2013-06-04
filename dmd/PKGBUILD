@@ -68,7 +68,7 @@ package_dmd() {
 # Will be packaged separately once GDC/LDC will be able to compile phobos and pass test suite.
 # For now only dependency is relaxed
 package_libphobos() {
-  depends=("d-compiler>=$pkgver")
+  depends=("dmd=$pkgver")
   pkgdesc="The Phobos standard library for D programming language"
   license="Boost"
   install -Dm644 $srcdir/phobos/generated/linux/release/$_archbits/libphobos2.a $pkgdir/usr/lib/libphobos2.a
