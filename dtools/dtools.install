@@ -1,7 +1,0 @@
-post_install() {
-    ln -s /usr/bin/dtools-rdmd /usr/bin/rdmd
-}
-
-pre_remove() {
-    rm /usr/bin/rdmd
-}

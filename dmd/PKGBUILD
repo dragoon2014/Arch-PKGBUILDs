@@ -7,7 +7,7 @@
 pkgname=('dmd' 'libphobos')
 pkgbase=dmd
 pkgver=2.063.1
-pkgrel=1
+pkgrel=2
 arch=('i686' 'x86_64')
 url="http://www.dlang.org"
 makedepends=('git')
@@ -73,6 +73,8 @@ package_libphobos() {
   license="Boost"
   install -Dm644 $srcdir/phobos/generated/linux/release/$_archbits/libphobos2.a $pkgdir/usr/lib/libphobos2.a
   install -Dm644 $srcdir/phobos/generated/linux/release/$_archbits/libphobos2.so $pkgdir/usr/lib/libphobos2.so
+  ln -s $pkgdir/usr/lib/libphobos2.so $pkgdir/usr/lib/libphobos2.so.0
+  ln -s $pkgdir/usr/lib/libphobos2.so.0 $pkgdir/usr/lib/libphobos2.so.0.63.0
 
   mkdir -p $pkgdir/usr/include/d
   cp -r $srcdir/phobos/{*.d,etc,std} $pkgdir/usr/include/d

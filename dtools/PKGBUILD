@@ -1,7 +1,7 @@
 pkgname=dtools
 pkgdesc="Optional development utilities collection for D programming language"
 pkgver=2.063.1
-pkgrel=1
+pkgrel=2
 arch=('i686' 'x86_64')
 url="http://www.dlang.org"
 license=('Boost')
@@ -9,7 +9,6 @@ makedepends=('git' 'sed' 'd-compiler')
 optdepends=('zsh: for using dtools-update.sh script')
 source=("git+http://github.com/D-Programming-Language/tools.git#tag=v$pkgver") 
 sha1sums=('SKIP')
-install='dtools.install'
 
 # Currently omitted:
 #     * dman - requires additional files for fine build configuration
@@ -78,4 +77,5 @@ package() {
     do
         install -D -m 555 $name $pkgdir/usr/bin/dtools-$name 
     done
+	ln -s $pkgdir/usr/bin/dtools-rdmd $pkgdir/usr/bin/rdmd
 }
