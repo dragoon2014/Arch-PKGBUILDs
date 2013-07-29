@@ -1,28 +1,34 @@
-# Maintainer: Sven-Hendrik Haase <sh@lutzhaase.com>
+# $Id: PKGBUILD 92843 2013-06-17 00:23:19Z svenstaro $
+# Maintainer: Mihails Strasunse <public@dicebot.lv>
+# Contributor: Sven-Hendrik Haase <sh@lutzhaase.com>
 # Contributor: Chris Brannon <cmbrannon79@gmail.com>
 # Contributor: Andrea Scarpino <andrea@archlinux.org>
 # Contributor: Anders Bergh <anders1@gmail.com>
 # Contributor: Alexander Fehr <pizzapunk gmail com>
 
-pkgname=('dmd' 'libphobos')
+pkgname=('dmd' 'libphobos' 'dtools')
+groups=('dlang')
 pkgbase=dmd
-pkgver=2.063.1
+pkgver=2.063.2
 pkgrel=2
 arch=('i686' 'x86_64')
 url="http://www.dlang.org"
 makedepends=('git')
 source=("git+http://github.com/D-Programming-Language/dmd.git#tag=v$pkgver"
         "git+http://github.com/D-Programming-Language/druntime.git#tag=v$pkgver"
-        "git+http://github.com/D-Programming-Language/phobos.git#tag=v$pkgver")
+        "git+http://github.com/D-Programming-Language/phobos.git#tag=v$pkgver"
+        "git+http://github.com/D-Programming-Language/tools#tag=v$pkgver" 
+        "soname.diff")
 sha1sums=('SKIP'
           'SKIP'
-          'SKIP')
+          'SKIP'
+          'SKIP'
+          '5a2198e8a024e1e6494034da569f0df18fabcf9d')
 
 [[ $CARCH == "x86_64" ]] && _archbits="64"
 [[ $CARCH == "i686" ]] && _archbits="32"
 
 build() {
-    # dmd
     cd $srcdir/dmd/src
     make -f posix.mak MODEL=$_archbits RELEASE=1
 
@@ -30,62 +36,89 @@ build() {
     make -f posix.mak MODEL=$_archbits DMD=$srcdir/dmd/src/dmd RELEASE=1
 
     cd $srcdir/phobos
+    # will be in upstream in next release but making naming change as early as possible
+    git apply $srcdir/soname.diff
     make -f posix.mak MODEL=$_archbits DMD=$srcdir/dmd/src/dmd RELEASE=1
+
+    cd $srcdir/tools
+
+    # rdmd is used to buil others
+    $srcdir/dmd/src/dmd -I../druntime/import -I../phobos -L-L../phobos/generated/linux/release/$_archbits/ -od. -ofdtools-rdmd rdmd.d
+
+    for tool in DustMite/dustmite ddemangle catdoc detab tolf dget; do
+        ./dtools-rdmd --build-only -I../druntime/import -I../phobos -L-L../phobos/generated/linux/release/$_archbits/ -od. -ofdtools-`basename $tool` $tool.d
+    done
 }
 
 package_dmd() {
-  pkgdesc="The D programming language reference compiler"
-  backup=('etc/dmd.conf')
-  depends=('gcc')
-  provides=("d-compiler=$pkgver")
-  license=('custom', 'GPL', 'Artistic')
+    pkgdesc="The D programming language reference compiler"
+    backup=('etc/dmd.conf')
+    depends=('gcc')
+    optdepends=('libphobos')
+    provides=("d-compiler=$pkgver")
+    license=('custom')
+    backup=('etc/dmd.conf')
 
-  install -Dm755 $srcdir/dmd/src/dmd $pkgdir/usr/bin/dmd
+    install -Dm755 $srcdir/dmd/src/dmd $pkgdir/usr/bin/dmd
 
-  mkdir -p $pkgdir/etc
-  echo -e "[Environment]\nDFLAGS=-I/usr/include/d -I/usr/include/d/druntime/import -L-L/usr/lib -L-L/usr/lib32 -L--no-warn-search-mismatch -L--export-dynamic" > $pkgdir/etc/dmd.conf
+    mkdir -p $pkgdir/etc
+    echo -e "[Environment]\nDFLAGS=-I/usr/include/d -I/usr/include/d/druntime/import -L-L/usr/lib -L-L/usr/lib32 -L--no-warn-search-mismatch -L--export-dynamic" > $pkgdir/etc/dmd.conf
 
-  install -Dm644 $srcdir/dmd/docs/man/man1/dmd.1 $pkgdir/usr/share/man/man1/dmd.1
-  install -Dm644 $srcdir/dmd/docs/man/man1/dmd.conf.5 $pkgdir/usr/share/man/man5/dmd.conf.5
+    install -Dm644 $srcdir/dmd/docs/man/man1/dmd.1 $pkgdir/usr/share/man/man1/dmd.1
+    install -Dm644 $srcdir/dmd/docs/man/man1/dmd.conf.5 $pkgdir/usr/share/man/man5/dmd.conf.5
 
-  install -Dm644 $srcdir/dmd/src/backendlicense.txt $pkgdir/usr/share/licenses/$pkgname/LICENSE-backend
-  install -Dm644 $srcdir/dmd/src/gpl.txt $pkgdir/usr/share/licenses/$pkgname/LICENSE-frontend.1
-  install -Dm644 $srcdir/dmd/src/artistic.txt $pkgdir/usr/share/licenses/$pkgname/LICENSE-frontend.2
+    install -Dm644 $srcdir/dmd/src/backendlicense.txt $pkgdir/usr/share/licenses/$pkgname/LICENSE-backend
+    install -Dm644 $srcdir/dmd/src/gpl.txt $pkgdir/usr/share/licenses/$pkgname/LICENSE-frontend.1
+    install -Dm644 $srcdir/dmd/src/artistic.txt $pkgdir/usr/share/licenses/$pkgname/LICENSE-frontend.2
+    install -Dm644 $srcdir/phobos/LICENSE_1_0.txt $pkgdir/usr/share/licenses/$pkgname/LICENSE-phobos
 
-  mkdir -p $pkgdir/usr/share/d/samples/
-  cp -r $srcdir/dmd/samples/* $pkgdir/usr/share/d/samples/
+    # Modules of standard library
+    mkdir -p $pkgdir/usr/include/d
+    cp -r $srcdir/phobos/{*.d,etc,std} $pkgdir/usr/include/d
 
-  find $pkgdir/usr -type f | xargs chmod 0644
-  chmod 755 $pkgdir/usr/bin/*
+    mkdir -p $pkgdir/usr/include/d/druntime
+    cp -r $srcdir/druntime/import $pkgdir/usr/include/d/druntime
 
-#  No longer available, because not source code is provided and those are not mandatory.
-#  Please get those from http://dlang.org if absolutely needed.
+    mkdir -p $pkgdir/usr/share/d/samples/
+    cp -r $srcdir/dmd/samples/* $pkgdir/usr/share/d/samples/
 
-#  install -Dm755 $srcdir/dmd/linux/bin${_archbits}/dumpobj $pkgdir/usr/bin/dumpobj
-#  install -Dm755 $srcdir/dmd/linux/bin${_archbits}/obj2asm $pkgdir/usr/bin/obj2asm
+    find $pkgdir/usr -type f | xargs chmod 0644
+    chmod 755 $pkgdir/usr/bin/*
 }
 
 # Will be packaged separately once GDC/LDC will be able to compile phobos and pass test suite.
 # For now only dependency is relaxed
 package_libphobos() {
-  depends=("dmd=$pkgver")
-  pkgdesc="The Phobos standard library for D programming language"
-  license="Boost"
-  install -Dm644 $srcdir/phobos/generated/linux/release/$_archbits/libphobos2.a $pkgdir/usr/lib/libphobos2.a
-  install -Dm644 $srcdir/phobos/generated/linux/release/$_archbits/libphobos2.so $pkgdir/usr/lib/libphobos2.so
-  ln -s $pkgdir/usr/lib/libphobos2.so $pkgdir/usr/lib/libphobos2.so.0
-  ln -s $pkgdir/usr/lib/libphobos2.so.0 $pkgdir/usr/lib/libphobos2.so.0.63.0
+    pkgdesc="The Phobos standard library for D programming language"
+    depends=("curl")
+    makedepends=("d-compiler")
+    license=("custom")
 
-  mkdir -p $pkgdir/usr/include/d
-  cp -r $srcdir/phobos/{*.d,etc,std} $pkgdir/usr/include/d
+    install -Dm644 $srcdir/phobos/generated/linux/release/$_archbits/libphobos2.a $pkgdir/usr/lib/libphobos2.a
+    install -Dm644 $srcdir/phobos/generated/linux/release/$_archbits/libphobos2.so $pkgdir/usr/lib/libphobos2.so
 
-  mkdir -p $pkgdir/usr/include/d/druntime
-  cp -r $srcdir/druntime/import $pkgdir/usr/include/d/druntime
+    find $pkgdir/usr -type f | xargs chmod 0644
 
-  mkdir -p $pkgdir/usr/share/doc/d/
+    install -Dm644 $srcdir/druntime/LICENSE $pkgdir/usr/share/licenses/$pkgname/LICENSE-druntime
+    install -Dm644 $srcdir/phobos/LICENSE_1_0.txt $pkgdir/usr/share/licenses/$pkgname/LICENSE-phobos
+}
 
-  find $pkgdir/usr -type f | xargs chmod 0644
+package_dtools() {
+    pkgdesc="Ancilliary tools for the D programming language compiler"
+    depends=("curl")
+    license=("custom")
 
-  install -Dm644 $srcdir/druntime/LICENSE $pkgdir/usr/share/licenses/$pkgname/LICENSE-druntime
-  install -Dm644 $srcdir/phobos/LICENSE_1_0.txt $pkgdir/usr/share/licenses/$pkgname/LICENSE-phobos
+    cd $srcdir/tools
+
+    mkdir -p $pkgdir/usr/bin
+    for tool in rdmd ddemangle catdoc detab tolf dget dustmite; do
+        install -m755 -t $pkgdir/usr/bin $pkgname-$tool
+    done
+
+    cd $pkgdir
+    ln -s dtools-rdmd usr/bin/rdmd
+    ln -s dtools-dustmite usr/bin/dustmite
+
+    # same Boost license as Phobos
+    install -Dm644 $srcdir/phobos/LICENSE_1_0.txt usr/share/licenses/$pkgname/LICENSE-phobos
 }
