@@ -54,6 +54,7 @@ package_dmd() {
     pkgdesc="The D programming language reference compiler"
     backup=('etc/dmd.conf')
     depends=('gcc' 'libphobos-devel')
+    optdepends=('dtools: collection of useful utilities for development in D')
     provides=("d-compiler=$pkgver")
     license=('custom')
     backup=('etc/dmd.conf')
