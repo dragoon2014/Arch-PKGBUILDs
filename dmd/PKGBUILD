@@ -7,7 +7,7 @@
 # Contributor: Alexander Fehr <pizzapunk gmail com>
 
 pkgname=('dmd' 'libphobos-devel' 'libphobos' 'dtools')
-groups=('dlang')
+groups=('dlang' 'dlang-dmd')
 pkgbase=dmd
 pkgver=2.063.2
 pkgrel=2
@@ -62,7 +62,7 @@ package_dmd() {
     install -Dm755 $srcdir/dmd/src/dmd $pkgdir/usr/bin/dmd
 
     mkdir -p $pkgdir/etc
-    echo -e "[Environment]\nDFLAGS=-I/usr/include/d -I/usr/include/d/druntime/import -L-L/usr/lib -L-L/usr/lib32 -L--no-warn-search-mismatch -L--export-dynamic" > $pkgdir/etc/dmd.conf
+    echo -e "[Environment]\nDFLAGS=-I/usr/include/dlang/dmd -I/usr/include/dlang/dmd/druntime/import -L-L/usr/lib -L-L/usr/lib32 -L--no-warn-search-mismatch -L--export-dynamic" > $pkgdir/etc/dmd.conf
 
     install -Dm644 $srcdir/dmd/docs/man/man1/dmd.1 $pkgdir/usr/share/man/man1/dmd.1
     install -Dm644 $srcdir/dmd/docs/man/man1/dmd.conf.5 $pkgdir/usr/share/man/man5/dmd.conf.5
@@ -85,11 +85,11 @@ package_libphobos-devel() {
 
     install -Dm644 $srcdir/phobos/generated/linux/release/$_archbits/libphobos2.a $pkgdir/usr/lib/libphobos2.a
 
-    mkdir -p $pkgdir/usr/include/d
-    cp -r $srcdir/phobos/{*.d,etc,std} $pkgdir/usr/include/d
+    mkdir -p $pkgdir/usr/include/dlang/dmd
+    cp -r $srcdir/phobos/{*.d,etc,std} $pkgdir/usr/include/dlang/dmd
 
-    mkdir -p $pkgdir/usr/include/d/druntime
-    cp -r $srcdir/druntime/import $pkgdir/usr/include/d/druntime
+    mkdir -p $pkgdir/usr/include/dlang/dmd/druntime
+    cp -r $srcdir/druntime/import $pkgdir/usr/include/dlang/dmd/druntime
 
     find $pkgdir/usr -type f | xargs chmod 0644
 
