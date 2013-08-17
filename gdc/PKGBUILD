@@ -70,6 +70,7 @@ build()
 package_gdc()
 {
     depends=('libmpc' 'zlib')
+    optdepends=('libgphobos-devel: D standard library, GDC version')
  
     BINARY_NAME=$CARCH-unknown-linux-gnu-gdc 
     install -D -m755 $srcdir/gcc-build/gcc/gdc $pkgdir/usr/bin/gdc
@@ -92,6 +93,4 @@ package_libgphobos-devel()
 
     install -D -m644 $srcdir/gcc-build/$CARCH-unknown-linux-gnu/libphobos/libgphobos2.a $pkgdir/usr/lib/libgphobos2.a
     install -D -m644 $srcdir/gcc-build/$CARCH-unknown-linux-gnu/libatomic/.libs/libatomic.a $pkgdir/usr/lib/libatomic.a
-
-    #chmod -R 644 $pkgdir/usr/include/dlang/gdc
 }
