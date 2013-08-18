@@ -5,25 +5,29 @@
 # Contributor: Anders Bergh <anders1@gmail.com>
 # Contributor: Alexander Fehr <pizzapunk gmail com>
 
-pkgname=('lib32-libphobos-devel' 'lib32-libphobos-devel')
+pkgname=('lib32-libphobos-devel' 'lib32-libphobos')
 pkgver=2.063.2
 pkgrel=1
 arch=('x86_64')
 groups=('dlang' 'dlang-dmd')
-url="http://www.digitalmars.com/d/2.0/"
+url="http://www.dlang.org"
 source=("git+http://github.com/D-Programming-Language/phobos.git#tag=v$pkgver"
-        "git+http://github.com/D-Programming-Language/druntime.git#tag=v$pkgver")
+        "git+http://github.com/D-Programming-Language/druntime.git#tag=v$pkgver"
+        "soname.diff")
+sha1sums=('SKIP'
+          'SKIP'
+          '5a2198e8a024e1e6494034da569f0df18fabcf9d')
 makedepends=('dmd' 'git')
 depends=('lib32-curl')
 license=('custom')
-md5sums=('SKIP'
-        'SKIP')
 
 build() {
     cd $srcdir/druntime
     make -f posix.mak MODEL=32 RELEASE=1
 
     cd $srcdir/phobos
+    # will be in upstream in next release but making naming change as early as possible
+    git apply $srcdir/soname.diff
     make -f posix.mak MODEL=32 RELEASE=1
 }
 
