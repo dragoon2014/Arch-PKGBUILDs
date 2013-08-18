@@ -46,7 +46,7 @@ build()
 {
     cd ${srcdir}/gcc-build
 
-    ${srcdir}/gcc-$_snapshot/configure --prefix=/usr \
+    ${srcdir}/gcc-$_snapshot/configure --prefix=/usr --build=$CARCH-linux-gnu \
         --libdir=/usr/lib --libexecdir=/usr/lib \
         --mandir=/usr/share/man --infodir=/usr/share/info \
         --with-bugurl=https://bugs.archlinux.org/ \
@@ -72,11 +72,9 @@ package_gdc()
     depends=('libmpc' 'zlib')
     optdepends=('libgphobos-devel: D standard library, GDC version')
  
-    BINARY_NAME=$CARCH-unknown-linux-gnu-gdc 
     install -D -m755 $srcdir/gcc-build/gcc/gdc $pkgdir/usr/bin/gdc
-    ln -s gdc $pkgdir/usr/bin/$BINARY_NAME
 
-    install -D -m755 $srcdir/gcc-build/gcc/cc1d $pkgdir/usr/lib/gcc/$CARCH-unknown-linux-gnu/4.8.1/cc1d
+    install -D -m755 $srcdir/gcc-build/gcc/cc1d $pkgdir/usr/lib/gcc/$CARCH-linux-gnu/4.8.1/cc1d
 }
 
 package_libgphobos-devel()
@@ -91,6 +89,6 @@ package_libgphobos-devel()
     cp -r $srcdir/gdc/libphobos/std ${pkgdir}/usr/include/dlang/gdc/$pkgver/std
     cp -r $srcdir/gdc/libphobos/etc ${pkgdir}/usr/include/dlang/gdc/$pkgver/etc
 
-    install -D -m644 $srcdir/gcc-build/$CARCH-unknown-linux-gnu/libphobos/libgphobos2.a $pkgdir/usr/lib/libgphobos2.a
-    install -D -m644 $srcdir/gcc-build/$CARCH-unknown-linux-gnu/libatomic/.libs/libatomic.a $pkgdir/usr/lib/libatomic.a
+    install -D -m644 $srcdir/gcc-build/$CARCH-linux-gnu/libphobos/libgphobos2.a $pkgdir/usr/lib/libgphobos2.a
+    install -D -m644 $srcdir/gcc-build/$CARCH-linux-gnu/libatomic/.libs/libatomic.a $pkgdir/usr/lib/libatomic.a
 }
