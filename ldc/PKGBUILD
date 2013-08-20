@@ -1,5 +1,6 @@
 # $Id$
-# Maintainer: Sven-Hendrik Haase <sh@lutzhaase.com>
+# Maintainer: Mihails Strasuns <public@dicebot.lv>
+# Contributor: Sven-Hendrik Haase <sh@lutzhaase.com>
 pkgname=ldc
 pkgver=0.11.0
 epoch=1
