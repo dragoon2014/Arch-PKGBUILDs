@@ -53,7 +53,7 @@ build() {
 package_dmd() {
     pkgdesc="The D programming language reference compiler"
     backup=('etc/dmd.conf')
-    depends=('gcc' 'libphobos-devel')
+    depends=('gcc')
     optdepends=('dtools: collection of useful utilities for development in D' 'libphobos-devel: standard library, development package')
     provides=("d-compiler=$pkgver")
     license=('custom')
@@ -81,6 +81,7 @@ package_dmd() {
 
 package_libphobos-devel() {
     pkgdesc="The Phobos standard library for D programming language. Modules and static library."
+    depends=("dmd")
     license=("custom")
 
     install -Dm644 $srcdir/phobos/generated/linux/release/$_archbits/libphobos2.a $pkgdir/usr/lib/libphobos2.a
