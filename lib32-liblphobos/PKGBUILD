@@ -4,7 +4,7 @@
 pkgname=lib32-liblphobos-devel
 groups=('dlang' 'dlang-ldc')
 pkgver=20130604
-pkgrel=1
+pkgrel=2
 pkgdesc="libphobos for ldc (32-bit)"
 arch=('x86_64')
 url="https://github.com/ldc-developers/ldc"
