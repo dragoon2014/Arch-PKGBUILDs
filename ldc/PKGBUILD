@@ -1,18 +1,17 @@
-# $Id: PKGBUILD 96882 2013-09-07 01:54:16Z dicebot $
+# $Id: PKGBUILD 97971 2013-10-02 11:57:02Z dicebot $
 # Maintainer: Mihails Strasuns <public@dicebot.lv>
 # Contributor: Sven-Hendrik Haase <sh@lutzhaase.com>
 pkgname=('ldc' 'liblphobos-devel')
 groups=('dlang' 'dlang-ldc')
 pkgver=0.11.0
 epoch=1
-pkgrel=3
+pkgrel=4
 pkgdesc="A D Compiler based on the LLVM Compiler Infrastructure including D runtime and libphobos2"
 arch=('i686' 'x86_64')
 url="https://github.com/ldc-developers/ldc"
 license=('BSD')
 depends=('libconfig')
 makedepends=('git' 'cmake' 'llvm')
-backup=('etc/ldc2.conf')
 source=("git://github.com/ldc-developers/ldc.git#tag=v${pkgver}"
         "ldc2.conf"
         "ldc2.rebuild.conf"
