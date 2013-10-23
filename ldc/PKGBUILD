@@ -1,11 +1,11 @@
-# $Id: PKGBUILD 97971 2013-10-02 11:57:02Z dicebot $
+# $Id: PKGBUILD 99047 2013-10-23 12:02:15Z dicebot $
 # Maintainer: Mihails Strasuns <public@dicebot.lv>
 # Contributor: Sven-Hendrik Haase <sh@lutzhaase.com>
 pkgname=('ldc' 'liblphobos-devel')
 groups=('dlang' 'dlang-ldc')
-pkgver=0.11.0
+pkgver=0.12.0
 epoch=1
-pkgrel=4
+pkgrel=1
 pkgdesc="A D Compiler based on the LLVM Compiler Infrastructure including D runtime and libphobos2"
 arch=('i686' 'x86_64')
 url="https://github.com/ldc-developers/ldc"
@@ -35,7 +35,7 @@ build() {
 }
 
 package_ldc() {
-    optdepends=("liblphobos-devel: standard library, static one + imports, LDC version")
+    optdepends=("liblphobos-devel: stadard library, static one + imports, LDC version")
     backup=("etc/ldc2.conf"
             "etc/ldc2.rebuild.conf"
            )
@@ -59,6 +59,7 @@ package_ldc() {
 package_liblphobos-devel() {
     depends=("ldc")
     provides=("d-runtime" "d-stdlib")
+	options=("staticlibs")
 
     # libraries
     install -D -m644 $srcdir/ldc/build/lib/libphobos-ldc.a $pkgdir/usr/lib/liblphobos.a
