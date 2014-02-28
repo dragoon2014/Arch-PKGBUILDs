@@ -5,7 +5,7 @@
 
 pkgname=('gdc' 'libgphobos-devel')
 pkgver=4.8.2
-pkgrel=5
+pkgrel=6
 arch=('i686' 'x86_64')
 url="https://github.com/D-Programming-GDC/GDC"
 license=('GPL')
@@ -54,15 +54,16 @@ build()
         --enable-shared --enable-threads=posix \
         --with-system-zlib --enable-__cxa_atexit \
         --disable-libunwind-exceptions --enable-clocale=gnu \
-        --disable-libstdcxx-pch \
+        --disable-libstdcxx-pch --disable-libssp \
         --enable-gnu-unique-object --enable-linker-build-id \
         --enable-cloog-backend=isl --disable-cloog-version-check \
-        --enable-lto --enable-gold --enable-ld=default \
-        --enable-plugin --with-plugin-ld=ld.gold \
-        --with-linker-hash-style=gnu --disable-install-libiberty \
-        --disable-multilib --disable-libssp --disable-werror \
+        --enable-lto --enable-gold --enable-plugin --enable-ld=default \
+        --enable-install-libiberty --with-plugin-ld=ld.gold \
+        --with-linker-hash-style=gnu \
+        --disable-multilib --disable-werror \
         --disable-nls --disable-bootstrap \
-        --disable-libgomp --disable-libmudflap --disable-libquadmath
+        --disable-libgomp --disable-libmudflap --disable-libquadmath \
+        --enable-checking=release
 
     make 
 }
