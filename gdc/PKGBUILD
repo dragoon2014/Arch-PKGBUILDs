@@ -70,8 +70,7 @@ build()
 
 package_gdc()
 {
-    depends=('gcc' 'binutils')
-    optdepends=('libgphobos-devel: D standard library, GDC version')
+    depends=('gcc' 'binutils' 'libgphobos-devel')
     provides=("d-compiler")
     pkgdesc="Compiler for D programming language which uses gcc backend (2.064.2 frontend version)"
  

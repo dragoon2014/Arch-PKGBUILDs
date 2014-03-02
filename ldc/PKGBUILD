@@ -35,7 +35,7 @@ build() {
 }
 
 package_ldc() {
-    optdepends=("liblphobos-devel: standard library, static one + imports, LDC version")
+    depends=('liblphobos-devel')
     backup=("etc/ldc2.conf"
             "etc/ldc2.rebuild.conf"
            )
