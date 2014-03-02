@@ -16,7 +16,7 @@ url="http://www.dlang.org"
 makedepends=('git' 'gcc' 'make')
 source=("git+http://github.com/D-Programming-Language/dmd.git#tag=v$pkgver"
         "git+http://github.com/D-Programming-Language/druntime.git#tag=v$pkgver"
-        "git+http://github.com/D-Programming-Language/phobos.git#tag=v$pkgver"
+        "git+http://github.com/D-Programming-Language/phobos.git#tag=v$pkgver")
 sha1sums=('SKIP'
           'SKIP'
           'SKIP')
