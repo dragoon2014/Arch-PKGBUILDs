@@ -40,7 +40,7 @@ package_dmd() {
     backup=('etc/dmd.conf')
     depends=('gcc' 'libphobos-devel')
     optdepends=(
-        'dtools: collection of useful utilities for development in D' 'libphobos-devel: standard library, development package'
+        'dtools: collection of useful utilities for development in D'
         'libphobos: standard D library, Phobos; shared library'
     )
     provides=("d-compiler=$pkgver")
