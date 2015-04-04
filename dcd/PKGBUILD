@@ -1,0 +1,45 @@
+# Maintainer: Mihails Strasuns <public@dicebot.lv>
+pkgname=('dcd')
+pkgver=0.5.1
+pkgrel=1
+pkgdesc="D Completion Daemon: auto-complete for the D programming language"
+license=("GPL3")
+groups=('dlang')
+arch=('i686' 'x86_64')
+url="https://github.com/Hackerpilot/DCD"
+makedepends=('ldc' 'git')
+depends=('liblphobos')
+
+source=(
+    "git+https://github.com/Hackerpilot/DCD#tag=v$pkgver"
+    "dcd.service"
+)
+sha256sums=(
+    "SKIP"
+#    "5f2af0b06e3ace5d66c922e7e32f461cfbc2369f2c27fd7092210750c8f4da83"
+    "SKIP"
+)
+
+build()
+{
+    cd $srcdir/DCD
+    git submodule update --init
+    make ldc
+}
+
+package()
+{
+    cd $srcdir/DCD
+
+    # binaries
+    mkdir -p $pkgdir/usr/bin
+    install -m755 -t $pkgdir/usr/bin ./bin/dcd-server
+    install -m755 -t $pkgdir/usr/bin ./bin/dcd-client
+
+    # documentation
+    mkdir -p $pkgdir/usr/share/man/man1
+    install -Dm644 man1/* $pkgdir/usr/share/man/man1/
+
+    # systemd service
+    install -Dm644 $srcdir/dcd.service ${pkgdir}/usr/lib/systemd/system/dcd.service
+}
