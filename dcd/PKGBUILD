@@ -1,6 +1,6 @@
 # Maintainer: Mihails Strasuns <public@dicebot.lv>
 pkgname=('dcd')
-pkgver=0.5.1
+pkgver=0.6.0
 pkgrel=1
 pkgdesc="D Completion Daemon: auto-complete for the D programming language"
 license=("GPL3")
@@ -16,8 +16,7 @@ source=(
 )
 sha256sums=(
     "SKIP"
-#    "5f2af0b06e3ace5d66c922e7e32f461cfbc2369f2c27fd7092210750c8f4da83"
-    "SKIP"
+    "7d3483ee92e42101d07395775aac5f0b277780f847c3823879fb35d1f2a9fbb3"
 )
 
 build()
