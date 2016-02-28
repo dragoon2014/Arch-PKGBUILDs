@@ -1,35 +1,33 @@
+# $Id: PKGBUILD 141532 2015-09-23 15:54:05Z dicebot $
 # Maintainer: Mihails Strasunse <public@dicebot.lv>
 
 pkgname=('dtools')
-pkgver=2.067.0
+pkgver=2.070.1
 pkgrel=1
 pkgdesc="Ancilliary tools for the D programming language"
 license=("custom")
 groups=('dlang')
 arch=('i686' 'x86_64')
 url="http://www.dlang.org"
-# makedepends=('d-compiler' 'd-runtime' 'git')
-makedepends=('ldc' 'git')
-# depends=('d-runtime' 'curl')
-depends=('liblphobos')
+makedepends=('dmd' 'libphobos' 'git')
+depends=('curl')
 
 source=(
     "git+http://github.com/D-Programming-Language/tools#tag=v$pkgver"
-    "git+https://github.com/Dicebot/Arch-PKGBUILDs.git"
     "http://www.boost.org/LICENSE_1_0.txt"
+    "autodetect.diff"
 )
-sha1sums=(
-    'SKIP'
-    'SKIP'
-    '3cba29011be2b9d59f6204d6fa0a386b1b2dbd90'
-)
+sha1sums=('SKIP'
+          '3cba29011be2b9d59f6204d6fa0a386b1b2dbd90'
+          '7fb5bd71d6c4e90c0ca49b292454e11169afdee8')
 
 build()
 {
     # DMD=`$srcdir/Arch-PKGBUILDs/d-compiler.sh`
-    DMD=ldmd
+    DMD=dmd
 
     cd $srcdir/tools
+    git apply $srcdir/autodetect.diff
 
     # rdmd is used to build others
     $DMD -od. -ofdtools-rdmd rdmd.d
