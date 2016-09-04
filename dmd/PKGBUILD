@@ -16,10 +16,12 @@ url="http://www.dlang.org"
 makedepends=('git' 'gcc' 'make' 'dmd' 'libphobos-devel')
 source=("git+http://github.com/D-Programming-Language/dmd.git#tag=v$pkgver"
         "git+http://github.com/D-Programming-Language/druntime.git#tag=v$pkgver"
-        "git+http://github.com/D-Programming-Language/phobos.git#tag=v$pkgver")
+        "git+http://github.com/D-Programming-Language/phobos.git#tag=v$pkgver"
+        "dmd.conf")
 sha1sums=('SKIP'
           'SKIP'
-          'SKIP')
+          'SKIP'
+          '6151874cd03fe2d0e017b5630a1789b86aea6cc5')
 
 [[ $CARCH == "x86_64" ]] && _archbits="64"
 [[ $CARCH == "i686" ]] && _archbits="32"
@@ -52,7 +54,7 @@ package_dmd() {
     install -Dm755 $srcdir/dmd/src/dmd $pkgdir/usr/bin/dmd
 
     mkdir -p $pkgdir/etc
-    echo -e "[Environment]\nDFLAGS=-I/usr/include/dlang/dmd -L-L/usr/lib -L-L/usr/lib32 -L--export-dynamic" > $pkgdir/etc/dmd.conf
+    install -Dm644 $srcdir/dmd.conf $pkgdir/etc/dmd.conf
 
     mkdir -p $pkgdir/usr/share/man/man1
     mkdir -p $pkgdir/usr/share/man/man5
